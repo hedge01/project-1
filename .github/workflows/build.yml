@@ -4,20 +4,25 @@ on:
     branches: [ main ]
 
 jobs:
-        - name: Checkout Repository
+  build:  # Added correct job name
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout Repository
         uses: actions/checkout@v3  # Updated to v3
 
+      # Get current date and store in environment variable
+      - name: Get Date
+        id: get-date
+        run: echo "DATE=$(date -u "+%Y%m%d")" >> $GITHUB_ENV
+        shell: bash
+
+      # Cache Buildozer global directory
       - name: Cache Buildozer global directory
-        uses: actions/cache@v3  # Updated to v3
+        uses: actions/cache@v3
         with:
           path: .buildozer_global
           key: buildozer-global-${{ hashFiles('buildozer.spec') }}
-
-      - name: Cache Buildozer directory
-        uses: actions/cache@v3  # Updated to v3
-        with:
-          path: .buildozer
-          key: ${{ runner.os }}-${{ env.DATE }}-${{ hashFiles('buildozer.spec') }}
 
       # Cache Buildozer directory
       - name: Cache Buildozer directory
